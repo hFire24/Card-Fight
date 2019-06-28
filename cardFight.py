@@ -18,7 +18,7 @@ for i in range(190, 197):
     CARDS.append('R4')
 for i in range(197, 200):
     CARDS.append('R5')
-CARDS.append('250')
+CARDS.append('9999')
 
 # The fighter class holds the players' name, HP, and attributes.
 class Fighter():
@@ -56,14 +56,26 @@ class Fighter():
             print('The card didn\'t do anyting. Lame.')
             return
 
-        elif number == 250 and not mystery: # Only works if the 250 doesn't come from a mystery card.
+        elif number == 9999:
             print('The card NUKES ' + self.name + ' for infinite damage!!!')
             
-        else:
+        elif number + crit >= 150:
+            print('The card devastates ' + self.name + ' for ' + str(int(number + crit)) + ' damage!')
+
+        elif number + crit >= 100:
+            print('The card blows ' + self.name + ' away for ' + str(int(number + crit)) + ' damage!')
+
+        elif number + crit >= 50:
+            print('The card strikes ' + self.name + ' hard for ' + str(int(number + crit)) + ' damage!')
+
+        elif number + crit >= 10:
             print('The card hits ' + self.name + ' for ' + str(int(number + crit)) + ' damage!')
 
+        else:
+            print('The card hits ' + self.name + ' for only ' + str(int(number + crit)) + ' damage.')
+
         # The player's HP is modified here.    
-        if number + crit >= self.HP or number == 250 and not mystery:
+        if number + crit >= self.HP or number == 9999:
             self.HP = 0
         else: # int ensures that the values come out cleanly without decimal places.
             self.HP = int(self.HP - number - crit)
@@ -99,7 +111,7 @@ def machineDescription(number):
                     "He is an atheist who hates religious people.",
                     "He would punch a guy who's into anime.",
                     "She's a maneater!",
-                    "He seems evil.",
+                    "He is a murdurer.",
                     "He is a proponent of hate.",
                     "He loves watching R-Rated movies.",
                     "He is a Neo-Nazi.",
@@ -110,7 +122,7 @@ def machineDescription(number):
                     "He gave Mars of Destruction a 10 on MyAnimeList.",
                     "He is a porn addict.",
                     "He smokes funny things everyday.",
-                    "He is a rapist.",
+                    "He does really bad things to women.",
                     "He cheated on his wife.",
                     "He once stole a gaming console.",
                     "He has hacked numerous online accounts."]
@@ -221,7 +233,7 @@ def deathMessage(name, othername):
                 name + ' passed away.',
                 name + ' bit the dust.',
                 name + ' ascended to heaven.',
-                name + ' vaporized.',
+                name + ' expired.',
                 name + ' fainted.',
                 othername + ' will not be attending ' + name + '\'s funeral.',
                 name + ' flatlined.']
@@ -232,18 +244,25 @@ print('Welcome to Card Fight!')
 firstTime = True
 changeName = False
 
-while True:
-    if not firstTime:
+while True: # The Game Loop
+    if not firstTime: # Only runs after the first time.
         print('Would you like to change your character\'s name? (Yes/No)')
         change = input()
         if change.lower() == 'yes':
             changeName = True
         elif change.lower() == 'no':
             changeName = False
-        hero.HP = 250
-    if firstTime or changeName:
-        print('What is the name of your fighter?')
-        hero = Fighter(input(), 250)
+        hero.HP = 250 # Resets hero's HP to 250
+    if firstTime or changeName: # Only runs if a name change is requested or if it's the first time.
+        confirm = False
+        while not confirm:
+            # This loop ensures that the user enters in the correct name.
+            print('What is the name of your fighter?')
+            hero = Fighter(input(), 250)
+            print('Are you sure you want to name your fighter "' + hero.name + '"? (yes/no)')
+            if input().lower().startswith('y'):
+                confirm = True
+                
     print(hero.name + ', prepare to meet your opponent.')
     time.sleep(2)
 
@@ -263,6 +282,7 @@ while True:
     print('Press enter to continue.')
     input()
 
+    # This tutorial only appears when booting up for the first time.
     if firstTime == True:
         print('Would you like a tutorial? (Yes/No)')
         if input().lower().startswith('y'):
@@ -292,11 +312,11 @@ while True:
 
     firstTime = False
     
-    if hero.name == 'Chuck Norris' or hero.name == 'God':
+    if hero.name.lower() == 'chuck norris' or hero.name.lower() == 'god':
         hero.HP = 9999
-        
-    turnCounter = 0
-    if(coinFlip()):
+
+    turnCounter = 0 # Sets the turn counter to 0.
+    if(coinFlip()): # Flips a coin to determine who goes first.
         print(hero.name + ' goes first.')
         herosTurn = True
     else:
@@ -305,6 +325,7 @@ while True:
 
     gameIsPlaying = True
     time.sleep(1)
+    
     print('\nTURNS: ' + str(turnCounter))
     hero.displayStats()
     machine.displayStats()
@@ -320,14 +341,14 @@ while True:
                 turnCounter += 1
                 print('TURNS: ' + str(turnCounter))
                 card = getCard(CARDS)
-                if hero.name == "Chuck Norris":
-                    card = '250'
+                if hero.name.lower() == "chuck norris":
+                    card = '9999'
 
                 if card.startswith('+'):
                     print(hero.name + ' pulls out a heal card that says ' + card + '.')
                     value = card[1:]
                     time.sleep(2)
-                    if hero.name == 'God':
+                    if hero.name.lower() == 'god':
                         hero.godHeal(int(value))
                     else:
                         hero.heal(int(value))
@@ -345,7 +366,7 @@ while True:
                         machine.attack(damage, mod, mystery)
 
                     else:
-                        if card == '250':
+                        if card == '9999':
                             print(hero.name + ' pulls out an INFINITY card!!!')
                         elif card.startswith('8'):
                             print(hero.name + ' pulls out an ' + card + ' card.')
@@ -397,7 +418,7 @@ while True:
                     hero.attack(damage, mod, mystery)
 
                 else:
-                    if card == '250':
+                    if card == '9999':
                         print(machine.name + ' pulls out an INFINITY card!!!')
                     elif card.startswith('8'):
                         print(machine.name + ' pulls out an ' + card + ' card.')
@@ -406,7 +427,7 @@ while True:
 
                     damage = int(card)
                     time.sleep(2)
-                    if hero.name == 'God' and card == '250':
+                    if hero.name.lower() == 'god' and card == '9999':
                         print('God is immune to INFINITY cards.')
                     else:
                         hero.attack(damage, mod, mystery)
@@ -416,7 +437,6 @@ while True:
 
             herosTurn = True
 
-        
         time.sleep(2)
         print()
         hero.displayStats()
